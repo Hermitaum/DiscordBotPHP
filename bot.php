@@ -1,6 +1,6 @@
 <?php
-include "discordGateway.php";
-include "discordBot.php";
+include "DiscordGateway.php";
+include "Discord.php";
 
 use Discord\Gateway;
 use Discord\DiscordBOT;
