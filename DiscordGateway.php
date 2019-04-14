@@ -38,18 +38,18 @@ class Gateway {
 
 		$mask = "";
 
-    	foreach ($frameHead as $binstr) 
-    		$frame[] = chr(bindec($binstr));
-    
-    	for ($i = 0; $i < 4; $i++) 
-    		$mask .= chr(mt_rand(0, 255));
+		foreach ($frameHead as $binstr) 
+			$frame[] = chr(bindec($binstr));
+		
+		for ($i = 0; $i < 4; $i++) 
+			$mask .= chr(mt_rand(0, 255));
 
-    	$frame[] = $mask;
+		$frame[] = $mask;
 
-   		for ($i = 0; $i < strlen($payload); $i++)
-      		$frame[] = $payload[$i] ^ $mask[$i % 4];
+		for ($i = 0; $i < strlen($payload); $i++)
+			$frame[] = $payload[$i] ^ $mask[$i % 4];
 
-      	$this->socketWrite(implode("", $frame));
+		$this->socketWrite(implode("", $frame));
 	}
 
 	private function handshake($key){
@@ -61,10 +61,10 @@ class Gateway {
 
 		self::socketWrite($header);
 
-      	do {
-      		stream_get_line($this->socket, 1024, "\r\n");
-      		$socketMeta = stream_get_meta_data($this->socket);
-    	} while (!feof($this->socket) && $socketMeta['unread_bytes'] > 0);
+		do {
+			stream_get_line($this->socket, 1024, "\r\n");
+			$socketMeta = stream_get_meta_data($this->socket);
+		} while (!feof($this->socket) && $socketMeta['unread_bytes'] > 0);
 
 	}
 
@@ -72,10 +72,10 @@ class Gateway {
 		$continue();
 		do {
 			$payload = (int) ord($this->read(2)[1]) & 127;
-    		if ($payload > 125)
-     			$payload = bindec($this->sprintB($payload === 126 ? $this->read(2) : $this->read(8)));
+			if ($payload > 125)
+				$payload = bindec($this->sprintB($payload === 126 ? $this->read(2) : $this->read(8)));
 
-    		$buffer = json_decode($this->read($payload));
+			$buffer = json_decode($this->read($payload));
 
 			if (is_object($buffer)) {
 				$codes = array_flip($this->discordCodes);
@@ -87,9 +87,9 @@ class Gateway {
 					DiscordBOT::$authorChannel = $message->author->id;
 					$message->channel = $this->botClass;
 
-                	$message->author->mention = "<@{$message->author->id}>";
-                	$message->author->avatarUrl = "https://cdn.discordapp.com/avatars/{$message->author->id}/{$message->author->avatar}?size=128";
-                	$message->isDM = boolval(!is_object($message->member));
+					$message->author->mention = "<@{$message->author->id}>";
+					$message->author->avatarUrl = "https://cdn.discordapp.com/avatars/{$message->author->id}/{$message->author->avatar}?size=128";
+					$message->isDM = boolval(!is_object($message->member));
 
 					call_user_func($this->handles[$codes[$buffer->t]], $message);
 				}
@@ -112,21 +112,21 @@ class Gateway {
 		fwrite($this->socket, $data);
 	}
 
-  	private function read($length) {
-  		$data = "";
-    	while (strlen($data) < $length) {
-      		$buffer = fread($this->socket, $length - strlen($data));
-      		$data .= $buffer;
-    	}
-    	return $data;
-  	}
+	private function read($length) {
+		$data = "";
+		while (strlen($data) < $length) {
+			$buffer = fread($this->socket, $length - strlen($data));
+			$data .= $buffer;
+		}
+		return $data;
+	}
 
-  	private function sprintB($string) {
+	private function sprintB($string) {
 
-    	for ($i = 0; $i < strlen($string); $i++){
-    		$return .= sprintf("%08b", ord($string[$i]));
-    	}
-    	return $return;
-  	}
+		for ($i = 0; $i < strlen($string); $i++){
+			$return .= sprintf("%08b", ord($string[$i]));
+		}
+		return $return;
+	}
 }
 ?>
