@@ -14,7 +14,7 @@ class DiscordBOT extends Gateway {
         Gateway::init($config["token"], $this);
     }
 
-    public function sendMessage(string $content, array $embed = []){
+    public function sendMessage($content = "", array $embed = []){
         $requestOptions = [
             "path" => "channels/" . self::$guildChannel . "/messages",
             "headers" => [
@@ -29,7 +29,7 @@ class DiscordBOT extends Gateway {
         return $response;
     }
 
-    public function replyMessage(string $content, array $embed = []){
+    public function replyMessage($content = "", array $embed = []){
         $requestOptions = [
             "path" => "/users/@me/channels",
             "headers" => [
