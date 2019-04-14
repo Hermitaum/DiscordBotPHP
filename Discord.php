@@ -9,6 +9,7 @@ class DiscordBOT extends Gateway {
     public static $authorChannel;
     
     public function __construct(array $config){
+        ini_set("error_reporting", 0);
         self::$token = $config["bot"] ? "Bot ".$config["token"] : $config["token"];
         Gateway::init($config["token"], $this);
     }
